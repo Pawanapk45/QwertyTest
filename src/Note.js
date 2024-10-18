@@ -9,24 +9,75 @@ import {
 } from 'react-native';
 import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {transformer} from '../metro.config';
+import {useNavigation} from '@react-navigation/native';
 
 const NoteScreen = () => {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [notes, setNotes] = useState([
-    { id: 1, title: 'Note 1', content: 'This is a sample note', date: '24 jan' },
-    { id: 2, title: 'Note 2', content: 'This is another sample note', date: '20 feb' },
-    { id: 3, title: 'Note 3', content: 'This is a third sample note', date: '15 mar' },
-    { id: 4, title: 'Note 4', content: 'This is a fourth sample note', date: '25 may' },
-    { id: 5, title: 'Note 5', content: 'This is a fifth sample note', date: '20 june' },
-    { id: 6, title: 'Note 6', content: 'This is a sixth sample note', date: '20 sep' },
-    { id: 7, title: 'Note 7', content: 'This is a seventh sample note', date: '7 oct' },
-    { id: 8, title: 'Note 8', content: 'This is an eighth sample note', date: '18 oct' },
+    {
+      id: 1,
+      title: 'Note 1',
+      content: 'This is a sample note',
+      date: '24 jan',
+      pinned: false,
+    },
+    {
+      id: 2,
+      title: 'Note 2',
+      content: 'This is another sample note',
+      date: '20 feb',
+      pinned: false,
+    },
+    {
+      id: 3,
+      title: 'Note 3',
+      content: 'This is a third sample note',
+      date: '15 mar',
+      pinned: false,
+    },
+    {
+      id: 4,
+      title: 'Note 4',
+      content: 'This is a fourth sample note',
+      date: '25 may',
+      pinned: false,
+    },
+    {
+      id: 5,
+      title: 'Note 5',
+      content: 'This is a fifth sample note',
+      date: '20 june',
+      pinned: false,
+    },
+    {
+      id: 6,
+      title: 'Note 6',
+      content: 'This is a sixth sample note',
+      date: '20 sep',
+      pinned: false,
+    },
+    {
+      id: 7,
+      title: 'Note 7',
+      content: 'This is a seventh sample note',
+      date: '7 oct',
+      pinned: false,
+    },
+    {
+      id: 8,
+      title: 'Note 8',
+      content: 'This is an eighth sample note',
+      date: '18 oct',
+      pinned: false,
+    },
   ]);
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
-  const [selectedNotes, setSelectedNotes] = useState([]); // Track selected notes
-  const [quickSelectMode, setQuickSelectMode] = useState(false); // To track quick select mode
+  const [selectedNotes, setSelectedNotes] = useState([]);
+  const [quickSelectMode, setQuickSelectMode] = useState(false);
 
   const debounce = (func, delay) => {
     let timeoutId;
@@ -63,11 +114,11 @@ const NoteScreen = () => {
           : note,
       ),
     );
-    setEditingNoteId(null); // Exit edit mode
+    setEditingNoteId(null);
   };
 
   const cancelEdit = () => {
-    setEditingNoteId(null); // Cancel edit mode
+    setEditingNoteId(null);
   };
 
   const handleNoteSelect = id => {
@@ -79,13 +130,13 @@ const NoteScreen = () => {
   };
 
   const handleLongPress = id => {
-    setQuickSelectMode(true); // Enable quick select mode
-    handleNoteSelect(id); // Select the first note after long press
+    setQuickSelectMode(true);
+    handleNoteSelect(id);
   };
 
   const handleTap = id => {
     if (quickSelectMode) {
-      handleNoteSelect(id); // In quick select mode, tap will select/deselect notes
+      handleNoteSelect(id);
     }
   };
 
@@ -93,19 +144,30 @@ const NoteScreen = () => {
     setNotes(prevNotes =>
       prevNotes.filter(note => !selectedNotes.includes(note.id)),
     );
-    setSelectedNotes([]); // Clear selection after deletion
+    setSelectedNotes([]);
+  };
+
+  const pinNote = id => {
+    setNotes(prevNotes =>
+      prevNotes.map(note =>
+        note.id === id ? {...note, pinned: !note.pinned} : note,
+      ),
+    );
+    setSelectedNotes([]);
   };
 
   const filteredNotes = notes.filter(item =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  const sortedNotes = filteredNotes
+    .slice() // Create a copy to avoid mutating the original notes array
+    .sort((a, b) => (a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1));
+
   const AllSelect = () => {
     if (selectedNotes.length === notes.length) {
-      // If all notes are selected, deselect them
       setSelectedNotes([]);
     } else {
-      // Select all notes
       const allNoteIds = notes.map(note => note.id);
       setSelectedNotes(allNoteIds);
     }
@@ -114,20 +176,30 @@ const NoteScreen = () => {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <View style={style.TopHeader}>
+        {/* jdfhfhuh uehuif uihfuidf ufufy uf y */}
+        <TouchableOpacity onPress={()=> navigation.navigate('DrawerHome')}>
+        <Icon
+            name="bars"
+            size={20}
+            color="#000"
+            
+          />
+        </TouchableOpacity>
+        <View style={{flexDirection:'row',alignItems:'center'}}>
         <View>
           <Image
             source={{
               uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXqErjmTym0abU5uzCaaxnHCVm0SakEAiyvg&s',
             }}
-            style={{width: 35, height: 40}}
+            style={{width: 35, height: 40,marginRight:20}}
           />
         </View>
-        <View>
           <Text style={{color: '#000', fontWeight: 'bold', fontSize: 20}}>
             Note App
           </Text>
         </View>
         <View>
+          
           <Icon
             name="signal"
             size={20}
@@ -141,7 +213,7 @@ const NoteScreen = () => {
         <TextInput
           placeholder="Search note...."
           style={style.SearchInput}
-          placeholderTextColor="#000"
+          placeholderTextColor="gray"
           value={searchQuery}
           onChangeText={handleSearch}
         />
@@ -149,30 +221,36 @@ const NoteScreen = () => {
 
       <View style={style.actionBar}>
         {selectedNotes.length > 0 && (
-          <>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-              <TouchableOpacity
-                style={style.deleteButton}
-                onPress={deleteSelectedNotes}>
-                <Text style={{color: '#000'}}>
-                  Delete Selected ({selectedNotes.length})
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={style.selectButton}
-                onPress={AllSelect}>
-                <Text style={{color: '#000'}}>
-                  {selectedNotes.length === notes.length
-                    ? 'Deselect All'
-                    : 'Select All'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+              style={style.pinButton}
+              onPress={() => selectedNotes.forEach(id => pinNote(id))}>
+              <Text style={{color: '#000'}}>
+                {notes.find(note => note.id === selectedNotes[0])?.pinned
+                  ? 'Unpin'
+                  : 'Pin'}{' '}
+                Selected ({selectedNotes.length})
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={style.deleteButton}
+              onPress={deleteSelectedNotes}>
+              <Text style={{color: '#000'}}>
+                Delete Selected ({selectedNotes.length})
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={style.selectButton} onPress={AllSelect}>
+              <Text style={{color: '#000'}}>
+                {selectedNotes.length === notes.length
+                  ? 'Deselect All'
+                  : 'Select All'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
-      {notes.length === 0 ? ( 
+      {notes.length === 0 ? (
         <View style={style.emptyMessageContainer}>
           <Image
             source={{
@@ -184,16 +262,18 @@ const NoteScreen = () => {
         </View>
       ) : (
         <FlatList
-          data={filteredNotes}
+          data={sortedNotes}
           renderItem={({item}) => (
             <TouchableOpacity
               onLongPress={() => handleLongPress(item.id)}
-              onPress={() => handleTap(item.id)}
-              style={{width: '48%'}}>
+              onPress={() => {
+                handleTap(item.id);
+              }}
+              style={{width: '50%'}}>
               <View
                 style={[
                   style.noteBox,
-                  selectedNotes.includes(item.id) && style.selectedNoteBox, // Change style if selected
+                  selectedNotes.includes(item.id) && style.selectedNoteBox,
                 ]}>
                 {editingNoteId === item.id ? (
                   <>
@@ -209,7 +289,6 @@ const NoteScreen = () => {
                       onChangeText={setEditContent}
                       placeholder="Edit content"
                     />
-
                     <View
                       style={{
                         marginVertical: 10,
@@ -219,7 +298,7 @@ const NoteScreen = () => {
                       <TouchableOpacity
                         style={{
                           backgroundColor: 'green',
-                          padding: 10,
+                          padding: 5,
                           borderRadius: 10,
                         }}
                         onPress={() => saveEdit(item.id)}>
@@ -230,7 +309,7 @@ const NoteScreen = () => {
                       <TouchableOpacity
                         style={{
                           backgroundColor: 'red',
-                          padding: 10,
+                          padding: 5,
                           borderRadius: 10,
                         }}
                         onPress={cancelEdit}>
@@ -242,17 +321,52 @@ const NoteScreen = () => {
                   </>
                 ) : (
                   <>
-                    <Text style={{color: '#ffffff', fontSize: 12}}>
-                      {item.date}
-                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View>
+                        <Text style={{color: '#ffffff'}}>Hello</Text>
+                      </View>
+                      <View>
+                        {/* Display pin icon if the note is pinned */}
+                        {item.pinned && (
+                          <Icon
+                            name="map-pin"
+                            size={20}
+                            color="black"
+                            style={{
+                              marginRight: 5,
+                              transform: [{rotate: '45deg'}],
+                            }}
+                          />
+                        )}
+                      </View>
+                    </View>
                     <Text
                       style={{
                         color: '#ffffff',
-                        fontSize: 17,
-                        textAlign: 'center',
+                        fontSize: 12,
+                        textAlign: 'right',
                       }}>
-                      {item.title}
+                      {item.date}
                     </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#ffffff',
+                          fontSize: 17,
+                          textAlign: 'center',
+                        }}>
+                        {item.title}
+                      </Text>
+                    </View>
                     <Text
                       style={{
                         color: '#ffffff',
@@ -270,7 +384,7 @@ const NoteScreen = () => {
                       <TouchableOpacity
                         style={{
                           backgroundColor: 'green',
-                          padding: 10,
+                          padding: 5,
                           borderRadius: 10,
                         }}
                         onPress={() => startEditing(item)}>
@@ -280,8 +394,21 @@ const NoteScreen = () => {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={{
+                          backgroundColor: 'lightblue',
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                        onPress={() =>
+                          navigation.navigate('NotesDetail', {note: item})
+                        }>
+                        <Text style={{color: '#ffffff', textAlign: 'center'}}>
+                          View
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{
                           backgroundColor: 'red',
-                          padding: 10,
+                          padding: 5,
                           borderRadius: 10,
                         }}
                         onPress={() => deleteNote(item.id)}>
@@ -294,39 +421,34 @@ const NoteScreen = () => {
                 )}
               </View>
             </TouchableOpacity>
+            
+            
           )}
           numColumns={2}
           keyExtractor={item => item.id.toString()}
         />
       )}
+    
+    <View style={{ position: 'absolute', bottom: 50, right: 40 ,backgroundColor:'gray',borderRadius:50,}}>
+    <TouchableOpacity onPress={() => navigation.navigate('AddNote')} >
+      <Icon name="plus-circle" style={{fontSize:50,color:'blue'}} />
+    </TouchableOpacity>
+  </View>
+      
+
+       
     </GestureHandlerRootView>
   );
 };
 
-export default NoteScreen;
-
+// Styles remain unchanged
 const style = StyleSheet.create({
   TopHeader: {
+    backgroundColor: '#f0f0f0',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    padding: 10,
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#ffffff',
-    width: '100%',
-    borderBottomColor: '#7d7676ba',
-    borderBottomWidth: 3,
-  },
-  noteBox: {
-    padding: 20,
-    backgrounddColor: '#f2f2f2',
-    margin: 10,
-    borderRadius: 10,
-    backgroundColor: '#bd8d00',
-    width: '95%',
-  },
-  selectedNoteBox: {
-    backgroundColor: 'gray', // Highlight selected note
   },
   inputBox: {
     justifyContent: 'center',
@@ -340,53 +462,61 @@ const style = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     marginBottom: 10,
-    fontSize: 16,
+    fontSize: 18,
     backgroundColor: 'white',
   },
-  editInput: {
-    backgroundColor: 'white',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 8,
-    marginBottom: 10,
+  actionBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  pinButton: {
+    backgroundColor: 'yellow',
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 5,
   },
   deleteButton: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 10,
-    marginBottom: 10,
-    marginLeft: 10,
-    // width: '40%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    color: '#ffffff',
+    marginRight: 5,
   },
-  selectButton:{
-    backgroundColor: 'red',
+  selectButton: {
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 10,
-    marginBottom: 10,
-    marginLeft: 10,
-    // width: '40%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    color: '#ffffff',
   },
-  emptyMessageContainer:{
+  emptyMessageContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2',
-   
   },
-  emptyMessage:{
-    fontSize: 22,
-    color: '#000',
-    textAlign: 'center',
-    marginVertical:50,
-    textDecorationLine:'underline'
-  }
+  emptyMessage: {
+    fontSize: 20,
+    color: 'gray',
+    marginTop: 10,
+  },
+  noteBox: {
+    backgroundColor: '#bd8d00',
+    borderRadius: 10,
+    padding: 10,
+    margin: 5,
+    flex: 1,
+    justifyContent: 'space-between',
+    minHeight: 100,
+  },
+  selectedNoteBox: {
+    backgroundColor: 'gray', // Highlight selected note
+  },
+  editInput: {
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    marginVertical: 5,
+    backgroundColor: 'white',
+  },
 });
+
+export default NoteScreen;
