@@ -177,14 +177,14 @@ const NoteScreen = () => {
     <GestureHandlerRootView style={{flex: 1}}>
       <View style={style.TopHeader}>
         {/* jdfhfhuh uehuif uihfuidf ufufy uf y */}
-        <TouchableOpacity onPress={()=> navigation.navigate('DrawerHome')}>
+        {/* <TouchableOpacity onPress={()=> navigation.navigate('DrawerHome')}>
         <Icon
             name="bars"
             size={20}
             color="#000"
             
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={{flexDirection:'row',alignItems:'center'}}>
         <View>
           <Image
@@ -434,6 +434,7 @@ const NoteScreen = () => {
       <Icon name="plus-circle" style={{fontSize:50,color:'blue'}} />
     </TouchableOpacity>
   </View>
+
       
 
        
